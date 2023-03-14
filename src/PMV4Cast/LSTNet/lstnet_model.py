@@ -284,11 +284,7 @@ def LSTNetModel(init, input_shape):
     # Get tensor shape except batchsize
     tensor_shape = input_shape[1:]
 
-    if K.image_data_format() == 'channels_last':
-        ch_axis = 3
-    else:
-        ch_axis = 1
-
+    ch_axis = 3 if K.image_data_format() == 'channels_last' else 1
     X = Input(shape = tensor_shape)
 
     # CNN
@@ -340,10 +336,7 @@ def LSTNetModel(init, input_shape):
 	# Generate output as the summation of the Dense layer output and the AR one
         Y = Add()([Y,Z])
 
-    # Generate Model
-    model = Model(inputs = X, outputs = Y)
-
-    return model
+    return Model(inputs = X, outputs = Y)
 
 #######################################################################################################################
 #                                                 Model End                                                           #

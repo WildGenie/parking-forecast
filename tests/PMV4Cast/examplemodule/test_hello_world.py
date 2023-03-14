@@ -10,8 +10,7 @@ from PMV4Cast import examplemodule
 
 
 def test_something():
-    # print(os.getcwd())
-    assert True, "A comment to show if the test fails"
+    pass
 
 
 # def test_that_fails():
