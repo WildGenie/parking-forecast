@@ -101,9 +101,7 @@ class Model(object):
         self.validate_model(self.model)
         lstnet_tensorboard = ModelCompile(self.model, self.init)
         log.info(
-            "Training model ... started at {}".format(
-                datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-            )
+            f'Training model ... started at {datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")}'
         )
         h = train(self.model, Data, self.init, lstnet_tensorboard)
         loss, rse, corr, nrmse, nd = self.model.evaluate(Data.valid[0], Data.valid[1])
@@ -120,9 +118,7 @@ class Model(object):
         # SaveResults(self.model, self.init, h.history, test_result, list(test_result.keys()))
         # SaveHistory(self.init.save, h.history)
         log.info(
-            "Training is done at {}".format(
-                datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-            )
+            f'Training is done at {datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")}'
         )
         return
 
@@ -133,9 +129,7 @@ class Model(object):
         self.validate_model(lstnet)
         Data_test = self.normalize_data(rawdata.values)
         log.info(
-            "Predict testing data ... started at {}".format(
-                datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-            )
+            f'Predict testing data ... started at {datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")}'
         )
         Yt_hat = np.array(
             [
@@ -145,9 +139,7 @@ class Model(object):
         )
         q10, q50, q90 = self.postprocess_data([np.mean(Yt_hat, 0), np.std(Yt_hat, 0)])
         log.info(
-            "Predict testing data done at {}".format(
-                datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-            )
+            f'Predict testing data done at {datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")}'
         )
         return np.array([q10, q50, q90])
 
@@ -200,11 +192,7 @@ class Model(object):
 
 def train(model, data, init, tensorboard=None):
     """A wrapper to rescale the predictions and form quantiles"""
-    if init.validate == True:
-        val_data = (data.valid[0], data.valid[1])
-    else:
-        val_data = None
-
+    val_data = (data.valid[0], data.valid[1]) if init.validate == True else None
     early_stop = EarlyStopping(
         monitor="val_loss",
         min_delta=0.0001,
@@ -219,7 +207,7 @@ def train(model, data, init, tensorboard=None):
         monitor="val_loss",
         mode="min",
     )
-    history = model.fit(
+    return model.fit(
         x=data.train[0],
         y=data.train[1],
         epochs=init.epochs,
@@ -229,4 +217,3 @@ def train(model, data, init, tensorboard=None):
         if tensorboard
         else None,
     )
-    return history

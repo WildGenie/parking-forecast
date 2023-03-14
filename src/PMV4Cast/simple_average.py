@@ -19,7 +19,7 @@ class SimpleAverage(object):
     """Makes the predictions based on weekday and time history data"""
 
     def __init__(self, model_name, horizon, window):
-        self.model = dict()
+        self.model = {}
         self.name = model_name
         self.horizon = horizon
         self.window = window

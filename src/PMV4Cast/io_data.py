@@ -50,7 +50,7 @@ class DBClient(object):
         Args: query_type: str
         Returns:  dataframe:pd.DataFrame
         """
-        log.info("Fetching training data of {} field".format(field_name))
+        log.info(f"Fetching training data of {field_name} field")
         if query_type == "train":
             if self.start_time is None:
                 # 4 weeks rolling window
@@ -93,7 +93,7 @@ class DBClient(object):
         Args:
         Returns:
         """
-        log.info("Writing {} data to {} field".format(measurement_name, field_name))
+        log.info(f"Writing {measurement_name} data to {field_name} field")
         for column_name in list(df.columns.astype(str)):
             self.client.write_points(
                 df[[column_name]].rename(columns={column_name: field_name}),
@@ -114,26 +114,11 @@ class DBClient(object):
         tag_name="area",
     ):
         """A wrapper function to generate string clauses for InfluxDBClient"""
-        select_clause = (
-            'SELECT  mean("{}") FROM "{}" '
-            "WHERE time >= '{}' AND time <= {} - {} "
-            'GROUP BY time({}), "{}" fill(previous)'
-        ).format(
-            field_name,
-            measurement_name,
-            start_time,
-            end_time,
-            time_step,
-            time_step,
-            tag_name,
-        )
-        return select_clause
+        return f"""SELECT  mean("{field_name}") FROM "{measurement_name}" WHERE time >= '{start_time}' AND time <= {end_time} - {time_step} GROUP BY time({time_step}), "{tag_name}" fill(previous)"""
 
     def flush_db(self, measurement_name="GC parking", tag="area"):
         """WARNING! Does NOT work properly with tag"""
-        log.info(
-            "Flushing database for {} measurement".format(measurement_name, field_name)
-        )
+        log.info(f"Flushing database for {measurement_name} measurement")
         self.client.query(
-            'DROP SERIES FROM "{}" WHERE "tag" = \'{}\''.format(measurement_name, tag)
+            f"""DROP SERIES FROM "{measurement_name}" WHERE "tag" = \'{tag}\'"""
         )

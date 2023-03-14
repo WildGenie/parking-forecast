@@ -54,7 +54,7 @@ class Pipeline(object):
             horizon=horizon,
             time_step=time_step,
         )
-        log.info("Start running the {} model".format(model_name))
+        log.info(f"Start running the {model_name} model")
         self.run()
 
     def run(self):
@@ -74,8 +74,8 @@ class Pipeline(object):
 
     def init_model(self, model_name, horizon, window, epochs):
         """Initialize the model"""
-        log.info("Initializing the {} model".format(model_name))
-        self.model = dict()
+        log.info(f"Initializing the {model_name} model")
+        self.model = {}
         for field_name in self.field_names:
             if model_name == "lstnet":
                 self.model[field_name] = Model(model_name, horizon, window, epochs)
@@ -92,9 +92,7 @@ class Pipeline(object):
         """
         for field_name in self.field_names:
             log.info(
-                "Train {} ... at {}".format(
-                    field_name, datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-                )
+                f'Train {field_name} ... at {datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")}'
             )
             data = self.gc_db_client.read_db(query_type="train", field_name=field_name)
             self.model[field_name].train_model(data)
@@ -106,9 +104,7 @@ class Pipeline(object):
         """
         for field_name in self.field_names:
             log.info(
-                "Predict {} ... at {}".format(
-                    field_name, datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-                )
+                f'Predict {field_name} ... at {datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")}'
             )
             names = ["_q10", "_q50", "_q90"]
             data = self.gc_db_client.read_db(
@@ -141,7 +137,7 @@ class Pipeline(object):
 if __name__ == "__main__":
     logger_name = "simple_average"
     log = LogInit(logger_name, os.path.join("..", "..", "logs", logger_name), 20, True)
-    log.info("Python version: {}".format(sys.version))
+    log.info(f"Python version: {sys.version}")
 
     pp = Pipeline(
         "10m", 144, 144 * 7, logger_name, 1, ["count_occupied", "count_available"]

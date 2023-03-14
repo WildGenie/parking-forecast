@@ -297,6 +297,4 @@ def GetArguments():
     parser.add_argument('--logfilename', type=str, default="../../logs/lstnet", help="Filename where logging will be written. Default: logs/lstnet")
     parser.add_argument('--patience', type=int, default=25, help='Patience of training to be used for validation loss. Default=25')
 
-    args = parser.parse_args()
-
-    return args
+    return parser.parse_args()
